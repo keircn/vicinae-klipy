@@ -28,6 +28,27 @@ type CacheEntry = {
 
 const cache = new Map<string, CacheEntry>();
 
+const withPreviewMediaFilter = (filter: string): string => {
+	const required = [
+		"gif",
+		"tinygif",
+		"nanogif",
+		"gifpreview",
+		"tinygifpreview",
+		"nanogifpreview",
+	];
+	const merged = new Set(
+		filter
+			.split(",")
+			.map((value) => value.trim())
+			.filter(Boolean),
+	);
+	for (const value of required) {
+		merged.add(value);
+	}
+	return [...merged].join(",");
+};
+
 const withDefaultParams = (
 	params: Record<string, QueryValue>,
 ): Record<string, QueryValue> => {
@@ -39,7 +60,7 @@ const withDefaultParams = (
 		...params,
 		key: prefs.apiKey,
 		client_key: prefs.clientKey,
-		media_filter: prefs.mediaFilter,
+		media_filter: withPreviewMediaFilter(prefs.mediaFilter),
 		contentfilter: prefs.contentFilter,
 		country: prefs.country,
 		locale: prefs.locale,

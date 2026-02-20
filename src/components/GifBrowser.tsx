@@ -36,21 +36,45 @@ const createdDate = (timestamp?: number): string | undefined => {
 	}
 };
 
-const renderDetailMarkdown = (item: GifItem, displayUrl: string): string => {
+const renderDetailMarkdown = (item: GifItem, previewUrl: string): string => {
 	const description = item.contentDescription
 		? `\n\n${item.contentDescription}`
 		: "";
-	return `![${item.title}](${displayUrl})\n\n# ${item.title}${description}`;
+	return `![${item.title}](${previewUrl})\n\n# ${item.title}${description}`;
 };
 
-const pickPreviewUrl = (item: GifItem, preferredUrl: string): string => {
-	const previewVariant =
-		item.variants.gif ??
-		item.variants.tinygif ??
-		item.variants.nanogif ??
-		Object.values(item.variants).find((variant) => variant.preview)?.url;
+const pickListPreviewUrl = (item: GifItem, fallbackUrl: string): string => {
+	const prioritizedKeys = [
+		"tinygifpreview",
+		"nanogifpreview",
+		"gifpreview",
+		"tinygif",
+		"nanogif",
+		"gif",
+	];
+	for (const key of prioritizedKeys) {
+		const variant = item.variants[key];
+		if (variant?.preview) {
+			return variant.preview;
+		}
+		if (variant?.url) {
+			return variant.url;
+		}
+	}
+	const anyPreview = Object.values(item.variants).find(
+		(variant) => variant.preview,
+	);
+	return anyPreview?.preview ?? fallbackUrl;
+};
 
-	return previewVariant?.preview ?? previewVariant?.url ?? preferredUrl;
+const pickDetailGifUrl = (item: GifItem, fallbackUrl: string): string => {
+	for (const key of ["tinygif", "gif", "nanogif"]) {
+		const variant = item.variants[key];
+		if (variant?.url) {
+			return variant.url;
+		}
+	}
+	return fallbackUrl;
 };
 
 export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
@@ -137,7 +161,8 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 						item,
 						prefs.defaultMediaFormat,
 					);
-					const displayUrl = pickPreviewUrl(item, preferred.url);
+					const listPreviewUrl = pickListPreviewUrl(item, preferred.url);
+					const detailGifUrl = pickDetailGifUrl(item, preferred.url);
 					const dims = preferred.dims
 						? `${preferred.dims[0]}x${preferred.dims[1]}`
 						: undefined;
@@ -146,34 +171,32 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 							key={item.id}
 							id={item.id}
 							title={item.title}
-							subtitle={item.contentDescription}
-							icon={displayUrl || Icon.Image}
+							icon={listPreviewUrl || Icon.Image}
 							keywords={[
 								...item.tags,
 								item.contentDescription ?? "",
 								item.title,
 							]}
-							accessories={[
-								{ text: dims },
-								{ text: formatBytes(preferred.size) },
-								{ tag: Object.keys(item.variants).join(", ") },
-							]}
 							detail={
 								<List.Item.Detail
-									markdown={renderDetailMarkdown(item, displayUrl)}
+									markdown={renderDetailMarkdown(item, listPreviewUrl)}
 									metadata={
 										<List.Item.Detail.Metadata>
+											<List.Item.Detail.Metadata.Label
+												title="Preview URL"
+												text={listPreviewUrl}
+											/>
+											<List.Item.Detail.Metadata.Label
+												title="Animated GIF URL"
+												text={detailGifUrl}
+											/>
 											<List.Item.Detail.Metadata.Label
 												title="Preferred format"
 												text={prefs.defaultMediaFormat}
 											/>
 											<List.Item.Detail.Metadata.Label
-												title="Available formats"
-												text={Object.keys(item.variants).join(", ")}
-											/>
-											<List.Item.Detail.Metadata.Label
 												title="Dimensions"
-												text={dims ?? "Unknown"}
+												text={dims || "Unknown"}
 											/>
 											<List.Item.Detail.Metadata.Label
 												title="Size"

@@ -8,7 +8,7 @@ type Props = {
 };
 
 const buildMarkdown = (item: GifItem, gifUrl: string): string => {
-	const alt = item.title.replaceAll("[", "").replaceAll("]", "");
+	const alt = item.title.replace(/\[/g, "").replace(/\]/g, "");
 	return `![${alt}](${gifUrl})`;
 };
 
@@ -30,7 +30,7 @@ export const GifActions = ({ item }: Props) => {
 			<Action.OpenInBrowser
 				title="Open GIF In Browser"
 				url={gifUrl}
-				icon={Icon.Globe}
+				icon={Icon.Globe01}
 			/>
 		) : (
 			<Action.CopyToClipboard
@@ -62,7 +62,7 @@ export const GifActions = ({ item }: Props) => {
 				<Action.OpenInBrowser
 					title="Open Result Page"
 					url={pageUrl}
-					icon={Icon.Globe}
+					icon={Icon.Globe01}
 				/>
 				<Action.Open
 					title="Open GIF In App"
