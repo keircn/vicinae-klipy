@@ -43,6 +43,16 @@ const renderDetailMarkdown = (item: GifItem, displayUrl: string): string => {
 	return `![${item.title}](${displayUrl})\n\n# ${item.title}${description}`;
 };
 
+const pickPreviewUrl = (item: GifItem, preferredUrl: string): string => {
+	const previewVariant =
+		item.variants.gif ??
+		item.variants.tinygif ??
+		item.variants.nanogif ??
+		Object.values(item.variants).find((variant) => variant.preview)?.url;
+
+	return previewVariant?.preview ?? previewVariant?.url ?? preferredUrl;
+};
+
 export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 	const prefs = getPreferences();
 	const [searchText, setSearchText] = useState(initialQuery);
@@ -127,7 +137,7 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 						item,
 						prefs.defaultMediaFormat,
 					);
-					const displayUrl = preferred.url;
+					const displayUrl = pickPreviewUrl(item, preferred.url);
 					const dims = preferred.dims
 						? `${preferred.dims[0]}x${preferred.dims[1]}`
 						: undefined;
@@ -137,7 +147,7 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 							id={item.id}
 							title={item.title}
 							subtitle={item.contentDescription}
-							icon={preferred.preview || displayUrl || Icon.Image}
+							icon={displayUrl || Icon.Image}
 							keywords={[
 								...item.tags,
 								item.contentDescription ?? "",
