@@ -11,14 +11,220 @@
 	"icon": "extension_icon.png",
 	"commands": [
 		{
-			"name": "gif",
-			"title": "gif",
-			"subtitle": "Search for gifs",
-			"description": "Queries the given string for gifs via Klipy",
+			"name": "gif-search",
+			"title": "Search GIFs",
+			"subtitle": "Search Klipy for GIFs",
+			"description": "Search for GIFs and copy/open results quickly",
 			"mode": "view"
+		},
+		{
+			"name": "gif-trending",
+			"title": "Trending GIFs",
+			"subtitle": "Browse trending Klipy GIFs",
+			"description": "Browse currently trending GIFs from Klipy",
+			"mode": "view"
+		},
+		{
+			"name": "gif-suggest",
+			"title": "GIF Suggestions",
+			"subtitle": "Autocomplete and query ideas",
+			"description": "Get suggested GIF queries and jump to results",
+			"mode": "view"
+		},
+		{
+			"name": "gif-random",
+			"title": "Copy Random Trending GIF",
+			"subtitle": "Quickly copy or open a random GIF",
+			"description": "Fetch one random trending GIF and run the default action",
+			"mode": "no-view"
+		},
+		{
+			"name": "gif-from-selection",
+			"title": "GIF From Selection",
+			"subtitle": "Use selected text as search query",
+			"description": "Search Klipy with selected text and run the default action on first result",
+			"mode": "no-view"
 		}
 	],
-	"preferences": [],
+	"preferences": [
+		{
+			"type": "password",
+			"name": "apiKey",
+			"title": "Klipy API Key",
+			"description": "Your Klipy API key",
+			"required": true
+		},
+		{
+			"type": "textfield",
+			"name": "clientKey",
+			"title": "Client Key",
+			"description": "Optional client key used for analytics/ranking",
+			"placeholder": "vicinae-klipy-extension",
+			"default": "vicinae-klipy-extension",
+			"required": false
+		},
+		{
+			"type": "textfield",
+			"name": "apiBaseUrl",
+			"title": "Klipy API Base URL",
+			"description": "Klipy base URL. Keep default unless your account uses a custom host",
+			"default": "https://api.klipy.com",
+			"required": true
+		},
+		{
+			"type": "dropdown",
+			"name": "defaultAction",
+			"title": "Default Result Action",
+			"description": "Action triggered first in the action panel for each GIF",
+			"default": "copy",
+			"data": [
+				{
+					"title": "Copy GIF URL",
+					"value": "copy"
+				},
+				{
+					"title": "Open GIF",
+					"value": "open"
+				},
+				{
+					"title": "Open in Browser",
+					"value": "browser"
+				}
+			],
+			"required": true
+		},
+		{
+			"type": "appPicker",
+			"name": "openWithApp",
+			"title": "Open GIF With App",
+			"description": "Optional app used by 'Open GIF In App'",
+			"required": false
+		},
+		{
+			"type": "dropdown",
+			"name": "defaultMediaFormat",
+			"title": "Preferred Media Format",
+			"description": "Primary media variant to display and copy",
+			"default": "gif",
+			"data": [
+				{
+					"title": "GIF",
+					"value": "gif"
+				},
+				{
+					"title": "Tiny GIF",
+					"value": "tinygif"
+				},
+				{
+					"title": "Nano GIF",
+					"value": "nanogif"
+				},
+				{
+					"title": "MP4",
+					"value": "mp4"
+				},
+				{
+					"title": "Tiny MP4",
+					"value": "tinymp4"
+				}
+			],
+			"required": true
+		},
+		{
+			"type": "dropdown",
+			"name": "mediaFilter",
+			"title": "Media Filter",
+			"description": "Media formats requested from Klipy",
+			"default": "gif,tinygif,mp4,tinymp4,nanogif",
+			"data": [
+				{
+					"title": "GIF + TinyGIF + MP4 + TinyMP4 + NanoGIF",
+					"value": "gif,tinygif,mp4,tinymp4,nanogif"
+				},
+				{
+					"title": "GIF + TinyGIF",
+					"value": "gif,tinygif"
+				},
+				{
+					"title": "GIF only",
+					"value": "gif"
+				},
+				{
+					"title": "MP4 + TinyMP4",
+					"value": "mp4,tinymp4"
+				}
+			],
+			"required": true
+		},
+		{
+			"type": "dropdown",
+			"name": "contentFilter",
+			"title": "Content Filter",
+			"description": "Content safety level for search/trending requests",
+			"default": "medium",
+			"data": [
+				{
+					"title": "Off",
+					"value": "off"
+				},
+				{
+					"title": "Low",
+					"value": "low"
+				},
+				{
+					"title": "Medium",
+					"value": "medium"
+				},
+				{
+					"title": "High",
+					"value": "high"
+				}
+			],
+			"required": true
+		},
+		{
+			"type": "dropdown",
+			"name": "resultLimit",
+			"title": "Result Limit",
+			"description": "Maximum items loaded per API request",
+			"default": "30",
+			"data": [
+				{
+					"title": "10",
+					"value": "10"
+				},
+				{
+					"title": "20",
+					"value": "20"
+				},
+				{
+					"title": "30",
+					"value": "30"
+				},
+				{
+					"title": "50",
+					"value": "50"
+				}
+			],
+			"required": true
+		},
+		{
+			"type": "textfield",
+			"name": "country",
+			"title": "Country",
+			"description": "Country code sent to Klipy (e.g. US)",
+			"default": "US",
+			"required": false
+		},
+		{
+			"type": "textfield",
+			"name": "locale",
+			"title": "Locale",
+			"description": "Locale sent to Klipy (e.g. en_US)",
+			"default": "en_US",
+			"required": false
+		}
+	],
 	"scripts": {
 		"build": "vici build",
 		"dev": "vici develop",
