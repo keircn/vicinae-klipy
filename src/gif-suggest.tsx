@@ -1,4 +1,11 @@
-import { Action, ActionPanel, Icon, List, showToast, Toast } from "@vicinae/api";
+import {
+	Action,
+	ActionPanel,
+	Icon,
+	List,
+	showToast,
+	Toast,
+} from "@vicinae/api";
 import { useEffect, useMemo, useState } from "react";
 import { GifBrowser } from "./components/GifBrowser";
 import { autocompleteTerms, searchSuggestionTerms } from "./lib/klipy";
@@ -53,7 +60,8 @@ export default function GifSuggestCommand() {
 				if (controller.signal.aborted) {
 					return;
 				}
-				const message = err instanceof Error ? err.message : "Unknown API error";
+				const message =
+					err instanceof Error ? err.message : "Unknown API error";
 				setError(message);
 				await showToast({
 					style: Toast.Style.Failure,

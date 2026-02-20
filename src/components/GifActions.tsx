@@ -27,9 +27,17 @@ export const GifActions = ({ item }: Props) => {
 				icon={Icon.AppWindow}
 			/>
 		) : prefs.defaultAction === "browser" ? (
-			<Action.OpenInBrowser title="Open GIF In Browser" url={gifUrl} icon={Icon.Globe} />
+			<Action.OpenInBrowser
+				title="Open GIF In Browser"
+				url={gifUrl}
+				icon={Icon.Globe}
+			/>
 		) : (
-			<Action.CopyToClipboard title="Copy GIF URL" content={gifUrl} icon={Icon.CopyClipboard} />
+			<Action.CopyToClipboard
+				title="Copy GIF URL"
+				content={gifUrl}
+				icon={Icon.CopyClipboard}
+			/>
 		);
 
 	return (
@@ -51,8 +59,16 @@ export const GifActions = ({ item }: Props) => {
 				icon={Icon.CodeBlock}
 			/>
 			<ActionPanel.Section title="Open">
-				<Action.OpenInBrowser title="Open Result Page" url={pageUrl} icon={Icon.Globe} />
-				<Action.Open title="Open GIF In App" target={gifUrl} app={prefs.openWithApp} />
+				<Action.OpenInBrowser
+					title="Open Result Page"
+					url={pageUrl}
+					icon={Icon.Globe}
+				/>
+				<Action.Open
+					title="Open GIF In App"
+					target={gifUrl}
+					app={prefs.openWithApp}
+				/>
 			</ActionPanel.Section>
 			<ActionPanel.Submenu title="Use Alternate Format" icon={Icon.Swatch}>
 				{Object.entries(item.variants).map(([format, variant]) => (

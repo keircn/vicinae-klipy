@@ -37,7 +37,9 @@ const createdDate = (timestamp?: number): string | undefined => {
 };
 
 const renderDetailMarkdown = (item: GifItem, displayUrl: string): string => {
-	const description = item.contentDescription ? `\n\n${item.contentDescription}` : "";
+	const description = item.contentDescription
+		? `\n\n${item.contentDescription}`
+		: "";
 	return `![${item.title}](${displayUrl})\n\n# ${item.title}${description}`;
 };
 
@@ -73,7 +75,8 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 				if (controller.signal.aborted) {
 					return;
 				}
-				const message = err instanceof Error ? err.message : "Unknown API error";
+				const message =
+					err instanceof Error ? err.message : "Unknown API error";
 				setError(message);
 				setItems([]);
 				await showToast({
@@ -115,14 +118,15 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 			searchText={searchText}
 			onSearchTextChange={setSearchText}
 			searchBarPlaceholder={
-				mode === "search"
-					? "Search Klipy GIFs..."
-					: "Filter trending GIFs..."
+				mode === "search" ? "Search Klipy GIFs..." : "Filter trending GIFs..."
 			}
 		>
 			{items.length > 0 ? (
 				items.map((item) => {
-					const preferred = pickPreferredVariant(item, prefs.defaultMediaFormat);
+					const preferred = pickPreferredVariant(
+						item,
+						prefs.defaultMediaFormat,
+					);
 					const displayUrl = preferred.url;
 					const dims = preferred.dims
 						? `${preferred.dims[0]}x${preferred.dims[1]}`
@@ -134,7 +138,11 @@ export const GifBrowser = ({ mode, initialQuery = "" }: Props) => {
 							title={item.title}
 							subtitle={item.contentDescription}
 							icon={preferred.preview || displayUrl || Icon.Image}
-							keywords={[...item.tags, item.contentDescription ?? "", item.title]}
+							keywords={[
+								...item.tags,
+								item.contentDescription ?? "",
+								item.title,
+							]}
 							accessories={[
 								{ text: dims },
 								{ text: formatBytes(preferred.size) },

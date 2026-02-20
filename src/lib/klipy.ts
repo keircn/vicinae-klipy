@@ -131,7 +131,9 @@ const parseVariant = (value: unknown): GifVariant | undefined => {
 	};
 };
 
-const parseVariants = (item: Record<string, unknown>): Record<string, GifVariant> => {
+const parseVariants = (
+	item: Record<string, unknown>,
+): Record<string, GifVariant> => {
 	const out: Record<string, GifVariant> = {};
 	const mediaFormats =
 		(item.media_formats as Record<string, unknown> | undefined) ??
@@ -180,7 +182,8 @@ const parseGifItem = (item: unknown): GifItem | undefined => {
 		id,
 		title:
 			(typeof raw.title === "string" && raw.title) ||
-			(typeof raw.content_description === "string" && raw.content_description) ||
+			(typeof raw.content_description === "string" &&
+				raw.content_description) ||
 			"Untitled GIF",
 		url: fallbackUrl,
 		itemUrl: typeof raw.itemurl === "string" ? raw.itemurl : undefined,
@@ -232,7 +235,11 @@ const parseTerms = (payload: unknown): string[] => {
 			if (!value || typeof value !== "object") {
 				return undefined;
 			}
-			const typedValue = value as { term?: unknown; searchterm?: unknown; name?: unknown };
+			const typedValue = value as {
+				term?: unknown;
+				searchterm?: unknown;
+				name?: unknown;
+			};
 			if (typeof typedValue.term === "string") {
 				return typedValue.term;
 			}
